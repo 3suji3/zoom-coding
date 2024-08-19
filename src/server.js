@@ -30,8 +30,8 @@ wss.on("connection", (Socket) => {
   console.log("Connected to Browser ✅");
   Socket.on("close", () => console.log("Disconnected from the Browser ❌"))
   Socket.on("message", (message) => {
-    console.log(message.toString("utf8"));
-    sockets.forEach(aSocket => aSocket.send(message));
+    const messageString = message.toString("utf8");
+    sockets.forEach(aSocket => aSocket.send(messageString)); //각 브라우저를 aSocket으로 표시하고 메시지를 보낸다는 의미
   });
   // Socket.send("hello!!!");
 })
