@@ -3,6 +3,11 @@ const nickForm = document.querySelector("#nick");
 const messageForm = document.querySelector("#message");
 const socket = new WebSocket(`ws://${window.location.host}`)
 
+const makeMessage = (type, payload) => {
+  const msg = {type, payload}
+  return JSON.stringify(msg); //JSON.stringify는 JavaScript object를 string으로 바꿔줌.
+}
+
 const handleOpen = () => {
   console.log("Connected to Server ✅")
 }
@@ -26,14 +31,15 @@ socket.addEventListener("close", () => {
 const handleSubmit = (event) => {
   event.preventDefault();
   const input = messageForm.querySelector("input");
-  socket.send(input.value);
+  socket.send(makeMessage("new_message", input.value));
   input.value = "";
 }
 
 const handleNickSubmit = (event) => {
   event.preventDefault();
   const input = nickForm.querySelector("input");
-  socket.send(input.value);
+  socket.send(makeMessage("nickname", input.value));
+  input.value = "";
 }
 
 messageForm.addEventListener("submit", handleSubmit);

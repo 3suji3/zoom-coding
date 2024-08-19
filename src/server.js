@@ -27,11 +27,22 @@ const sockets = [];
 
 wss.on("connection", (Socket) => {
   sockets.push(Socket);
+  Socket["nickname"] = "Anon" //익명
   console.log("Connected to Browser ✅");
   Socket.on("close", () => console.log("Disconnected from the Browser ❌"))
-  Socket.on("message", (message) => {
-    const messageString = message.toString("utf8");
-    sockets.forEach(aSocket => aSocket.send(messageString)); //각 브라우저를 aSocket으로 표시하고 메시지를 보낸다는 의미
+  Socket.on("message", (msg) => {
+    const message = JSON.parse(msg); 
+    //JSON.parse는 string을 JavaScript object로 바꿔준다.
+    switch(message.type) {
+      case "new_message":
+        const messageString = message.toString("utf8");
+        sockets.forEach((aSocket) => 
+          aSocket.send(`${Socket.nickname}: ${message.payload}`)); //각 브라우저를 aSocket으로 표시하고 메시지를 보낸다는 의미
+          break;
+      case "nickname":
+        Socket["nickname"] = message.payload;
+        break;
+    }
   });
   // Socket.send("hello!!!");
 })
